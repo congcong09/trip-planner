@@ -29,3 +29,7 @@ def reset_llm():
     """重置LLM实例（用于测试后重新配置）"""
     global _llm_instance
     _llm_instance = None
+
+
+if __name__ == "__main__":
+    get_llm()

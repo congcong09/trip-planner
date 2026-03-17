@@ -48,7 +48,7 @@ def get_amap_mcp_tool() -> MCPTool:
 class AmapService:
     """高德地图服务封装类"""
 
-    def __int__(self):
+    def __init__(self):
         """初始化服务"""
         self.mcp_tool = get_amap_mcp_tool()
 
@@ -246,3 +246,9 @@ def get_amap_service() -> AmapService:
         _amap_service = AmapService()
 
     return _amap_service
+
+
+if __name__ == "__main__":
+    service_instance = get_amap_service()
+    weather_info = service_instance.get_weather("杭州")
+    print(weather_info)
