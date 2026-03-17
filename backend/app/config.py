@@ -31,8 +31,8 @@ class Settings(BaseSettings):
 
     amap_api_key: str = ""
 
-    unsplash_access_key: str = ""
-    unsplash_secret_key: str = ""
+    unsplash_access_key: str = "s98ZsjH6ZbEA05g9BZjka2638b6wyr1tnd4mo8G8Krg"
+    unsplash_secret_key: str = "3dRSLke1i8QB1KY1PzHRoJV-z64xXNm89VoGEM7-Vik"
 
     openai_api_key: str = ""
     openai_base_url: str = ""
