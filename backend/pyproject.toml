@@ -6,7 +6,7 @@ readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
     "fastapi>=0.135.1",
-    "hello-agents>=1.0.0",
+    "hello-agents>=0.2.4,<=0.2.9",
     "pydantic-settings>=2.13.1",
     "python-dotenv>=1.2.2",
 ]
