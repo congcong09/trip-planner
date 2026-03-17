@@ -7,7 +7,6 @@ from pydantic_settings import BaseSettings
 
 load_dotenv()
 
-
 hello_agents_env = Path(__file__).parent.parent.parent / "HelloAgents" / ".env"
 if hello_agents_env.exists():
     load_dotenv(hello_agents_env, override=False)
