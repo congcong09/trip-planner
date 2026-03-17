@@ -1,4 +1,8 @@
 from ..config import get_settings
+from ..services.llm_service import get_llm
+from hello_agents.tools import MCPTool
+from hello_agents import SimpleAgent
+from ..models.schemas import TripPlan, TripRequest
 
 ATTRACTION_AGENT_PROMPT = """你是景点搜索专家。你的任务是根据城市和用户偏好搜搜合适的景点。
 
@@ -149,7 +153,58 @@ class MultiAagentTripPlanner:
         """初始化多智能体系统"""
 
         print("开始初始化多智能体旅行规划系统...")
-        
+
         try:
-          settings = get_settings()
+            settings = get_settings()
+            self.llm = get_llm()
+
+            # 创建共享的 MCP 工具（只创建一次）
+            print(" - 创建共享MCP工具...")
+            self.amap_tool = MCPTool(
+                name="amap",
+                description="高德地图服务",
+                server_command=["uvx", "amap-mcp-server"],
+                env={"AMAP_MAPS_API_KEY": settings.amap_api_key},
+                auto_expand=True,
+            )
+
+            # 创建景点搜索Agent
+            print(" - 创建景点搜索Agent...")
+            self.attraction_agent = SimpleAgent(
+                name="景点搜索专家", llm=self.llm, system_prompt=ATTRACTION_AGENT_PROMPT
+            )
+
+            # 创建天气查询的 Agent
+            print(" - 创建天气查询的Agent")
+            self.weather_agent = SimpleAgent(
+                name="天气查询专家", llm=self.llm, system_prompt=WEATHER_AGENT_PROMPT
+            )
+
+            self.weather_agent.add_tool(self.amap_tool)
+
+            # 创建酒店推荐Agent
+            self.hotel_agent = SimpleAgent(
+                name="酒店推荐Agent", llm=self.llm, system_prompt=HOTEL_AGENT_PROMPT
+            )
+
+            self.hotel_agent.add_tool(self.amap_tool)
+
+            # 创建行程规划Agent(不需要工具)
+            print(" - 创建行程规划Agent...")
+            self.planner_agent = SimpleAgent(
+                name="行程规划专家", llm=self.llm, system_prompt=PLANNER_AGENT_PROMPT
+            )
+
+            print(f"✅ 多智能体系统初始化成功")
+            print(f"    景点搜索Agent:{len(self.attraction_agent.list_tools())} 个工具")
+            print(f"    天气查询Agent:{len(self.weather_agent.list_tools())} 个工具")
+            print(f"    酒店推荐Agent:{len(self.hotel_agent.list_tools())} 个工具")
         except Exception as e:
+            print(f"❌ 多智能体系统初始化失败：{str(e)}")
+            import traceback
+
+            traceback.print_exc()
+            raise
+
+    def plan_trip(self, request: TripRequest) -> TripPlan:
+        pass
